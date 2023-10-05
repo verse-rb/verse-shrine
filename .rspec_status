@@ -1,0 +1,7 @@
+example_id                                | status | run_time        |
+----------------------------------------- | ------ | --------------- |
+./spec/verse/shrine/config_spec.rb[1:1:1] | passed | 0.00323 seconds |
+./spec/verse/shrine/config_spec.rb[1:1:2] | passed | 0.0009 seconds  |
+./spec/verse/shrine/config_spec.rb[1:2:1] | passed | 0.00083 seconds |
+./spec/verse/shrine/config_spec.rb[1:2:2] | passed | 0.00048 seconds |
+./spec/verse/shrine_spec.rb[1:1]          | passed | 0.00038 seconds |
