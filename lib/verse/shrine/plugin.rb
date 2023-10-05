@@ -6,6 +6,38 @@ module Verse
 
       attr_reader :storages
 
+      ADAPTERS = {
+        "s3" => [Config::S3Schema, -> (config) {
+          opts = {
+            public: config.fetch(:public, true),
+            bucket: config.fetch(:bucket),
+            region: config.fetch(:region),
+            access_key_id: config.fetch(:access_key_id),
+            secret_access_key: config.fetch(:secret_access_key),
+            prefix: config.fetch(:prefix, nil),
+            endpoint: config.fetch(:endpoint, nil)
+          }.compact
+
+          require "shrine/storage/s3"
+
+          ::Shrine::Storage::S3.new(**opts)
+        }],
+        "file_system" => [Config::FileSystemSchema, -> (config) {
+          require "shrine/storage/file_system"
+
+          path = config[:path]
+          prefix = config[:prefix]
+
+          opts = {
+            prefix: config[:prefix],
+            permissions: config[:permissions]&.to_i(8),
+            directory_permissions: config[:directory_permissions]&.to_i(8)
+          }.compact
+
+          ::Shrine::Storage::FileSystem.new(path, **opts )
+        }]
+      }
+
       def description
         "Shrine integration with Verse."
       end
@@ -22,30 +54,14 @@ module Verse
         @storages = {}
 
         config.fetch(:storages).each do |config|
-          adapter = \
-            case config.fetch(:adapter)
-            when "s3"
-              opts = {
-                public: config.fetch(:public, true),
-                bucket: config.fetch(:bucket),
-                region: config.fetch(:region),
-                access_key_id: config.fetch(:access_key_id),
-                secret_access_key: config.fetch(:secret_access_key),
-                prefix: config.fetch(:prefix, nil),
-                endpoint: config.fetch(:endpoint, nil)
-              }.compact
 
-              require "shrine/storage/s3"
+          _, adapter = ADAPTERS.fetch(config.fetch(:adapter)) {
+            raise "Unsupported adapter: `#{config.fetch(:adapter)}`"
+          }
 
-              ::Shrine::Storage::S3.new(**opts)
-            when "file_system"
-              require "shrine/storage/file_system"
-              ::Shrine::Storage::FileSystem.new(config.dig(:config, :path), prefix: config.dig(:config, :prefix) || "")
-            else
-              raise NotImplementedError, "adapter not found: #{adapter}"
-            end
+          ::Shrine.storages[config[:name].to_sym] = \
+            adapter.call(config.fetch(:config))
 
-          ::Shrine.storages[config[:name].to_sym] = adapter
           @storages[config[:name].to_sym] = Manager.new(config[:name].to_sym)
         end
       end

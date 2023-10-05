@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+require "bootsnap"
+Bootsnap.setup(cache_dir: "tmp/cache")
+
+require "simplecov"
+SimpleCov.start do
+  add_filter do |file|
+    file.filename !~ /lib/
+  end
+end
+
 require "verse/shrine"
 require "pry"
 

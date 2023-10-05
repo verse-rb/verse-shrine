@@ -15,18 +15,15 @@ module Verse
         end
 
         rule(:storages).each do |index:|
-          result = \
-            case value[:adapter]
-            when "s3"
-              S3Schema.new.call(value[:config])
-            when "file_system"
-              FileSystemSchema.new.call(value[:config])
-            else
-              key([:storages, index, :adapter]).failure("Unsupported adapter: `#{value[:adapter]}`")
-              nil
-            end
+          schema, _ = Plugin::ADAPTERS.fetch(value[:adapter]) do
+            key([:storages, index, :adapter]).failure("Unsupported adapter: `#{value[:adapter]}`")
+            nil
+          end
 
-          next if result.nil?
+          next unless schema
+
+          result = schema.new.call(value[:config])
+
           key([:storages, index]).failure("Failed to validate adapter config") if result.failure?
         end
 

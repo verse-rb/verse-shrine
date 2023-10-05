@@ -7,7 +7,10 @@ plugins:
         - name: default
           adapter: file_system
           config:
-            path: tmp/storage
-            prefix: public/uploads
+            path: tmp/storage/default
+        - name: other
+          adapter: file_system
+          config:
+            path: tmp/storage/other
 logging:
   level: warn

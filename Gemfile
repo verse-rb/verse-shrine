@@ -15,4 +15,5 @@ gem "rubocop", "~> 1.21"
 gem "verse-core", github: "verse-rb/verse-core", branch: "master"
 
 gem "pry"
-
+gem "bootsnap"
+gem "simplecov"
