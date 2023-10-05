@@ -5,22 +5,27 @@ module Verse
     module Config
       class Schema < Verse::Validation::Contract
         params do
-          required(:adapter).filled(:string)
-          required(:config).hash
+          required(:storages).value(:array).each do
+            hash do
+              required(:name).filled(:string)
+              required(:adapter).filled(:string)
+              required(:config).hash
+            end
+          end
         end
 
-        rule(:adapter, :config) do
+        rule(:storages).each do |index:|
           result = \
-            case values[:adapter]
+            case value[:adapter]
             when "s3"
-              S3Schema.new.call(values[:config])
+              S3Schema.new.call(value[:config])
             when "file_system"
-              FileSystemSchema.new.call(values[:config])
+              FileSystemSchema.new.call(value[:config])
             else
-              raise "Unsupported adapter: `#{values[:adapter]}`"
+              key([:storages, index, :adapter]).failure("Unsupported adapter: `#{value[:adapter]}`")
             end
 
-          key.failure("Failed to validate adapter config") if result.failure?
+          key([:storages, index]).failure("Failed to validate adapter config") if result.failure?
         end
 
       end
