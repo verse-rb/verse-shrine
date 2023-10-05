@@ -9,6 +9,7 @@ gem "rake", "~> 13.0"
 
 gem "rspec", "~> 3.0"
 
+gem "relaxed-rubocop"
 gem "rubocop", "~> 1.21"
 
 gem "verse-core", github: "verse-rb/verse-core", branch: "master"

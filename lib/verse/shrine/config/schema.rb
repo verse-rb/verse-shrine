@@ -23,8 +23,10 @@ module Verse
               FileSystemSchema.new.call(value[:config])
             else
               key([:storages, index, :adapter]).failure("Unsupported adapter: `#{value[:adapter]}`")
+              nil
             end
 
+          next if result.nil?
           key([:storages, index]).failure("Failed to validate adapter config") if result.failure?
         end
 

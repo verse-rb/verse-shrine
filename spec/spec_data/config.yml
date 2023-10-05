@@ -1,0 +1,13 @@
+service_name: verse-http
+description: testing http plugin
+plugins:
+  - name: shrine
+    config:
+      storages:
+        - name: default
+          adapter: file_system
+          config:
+            path: tmp/storage
+            prefix: public/uploads
+logging:
+  level: warn
