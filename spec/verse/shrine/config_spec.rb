@@ -39,14 +39,14 @@ RSpec.describe Verse::Shrine::Config do
 
     it "validates the config" do
       expect(
-        Verse::Shrine::Config::Schema.new.call(config_s3)
+        Verse::Shrine::Config::Schema.validate(config_s3)
       ).to be_success
     end
 
     it "fails if config is not right" do
       expect(
-        Verse::Shrine::Config::Schema.new.call(bad_config_s3)
-      ).to be_failure
+        Verse::Shrine::Config::Schema.validate(bad_config_s3)
+      ).to be_fail
     end
   end
 
@@ -81,14 +81,14 @@ RSpec.describe Verse::Shrine::Config do
 
     it "validates the config" do
       expect(
-        Verse::Shrine::Config::Schema.new.call(config_file_system)
+        Verse::Shrine::Config::Schema.validate(config_file_system)
       ).to be_success
     end
 
     it "fails if config is not right" do
       expect(
-        Verse::Shrine::Config::Schema.new.call(bad_config_file_system)
-      ).to be_failure
+        Verse::Shrine::Config::Schema.validate(bad_config_file_system)
+      ).to be_fail
     end
 
   end

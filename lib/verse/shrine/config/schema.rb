@@ -3,30 +3,24 @@
 module Verse
   module Shrine
     module Config
-      class Schema < Verse::Validation::Contract
-        params do
-          required(:storages).value(:array).each do
-            hash do
-              required(:name).filled(:string)
-              required(:adapter).filled(:string)
-              required(:config).hash
+      Schema = Verse::Schema.define do
+        field(:storages, Array) do
+          field(:name, String)
+          field(:adapter, String)
+          field(:config, Hash)
+
+
+          rule("adapter match") do |hash, error|
+            schema, _ = Plugin::ADAPTERS.fetch(hash[:adapter]) do
+              error.add(:adapter, "Unsupported adapter: `#{hash[:adapter]}`")
+              next false
             end
+
+            schema.validate(hash[:config], error_builder: error)
+
+            true
           end
         end
-
-        rule(:storages).each do |index:|
-          schema, _ = Plugin::ADAPTERS.fetch(value[:adapter]) do
-            key([:storages, index, :adapter]).failure("Unsupported adapter: `#{value[:adapter]}`")
-            nil
-          end
-
-          next unless schema
-
-          result = schema.new.call(value[:config])
-
-          key([:storages, index]).failure("Failed to validate adapter config") if result.failure?
-        end
-
       end
     end
   end

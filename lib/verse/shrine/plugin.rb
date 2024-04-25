@@ -43,7 +43,7 @@ module Verse
       end
 
       def validate_config!
-        result = Config::Schema.new.call(config)
+        result = Config::Schema.validate(config)
 
         unless result.success?
           raise "Invalid config for shrine plugin: #{result.errors.messages.map(&:text).join(" ")}"

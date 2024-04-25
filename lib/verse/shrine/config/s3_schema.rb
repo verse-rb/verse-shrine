@@ -1,19 +1,16 @@
 module Verse
   module Shrine
     module Config
-      class S3Schema < Verse::Validation::Contract
-        params do
-          required(:bucket).filled(:string)
-          required(:access_key_id).filled(:string)
-          required(:secret_access_key).filled(:string)
+      S3Schema = Verse::Schema.define do
+        field(:bucket, String)
+        field(:access_key_id, String)
+        field(:secret_access_key, String)
 
-          optional(:public).filled(:string) # default true
+        field(:public, TrueClass).default(true)
 
-          optional(:region).filled(:string)
-          optional(:prefix).filled(:string)
-          optional(:endpoint).filled(:string)
-        end
-
+        field?(:region, String)
+        field?(:prefix, String)
+        field?(:endpoint, String)
       end
     end
   end

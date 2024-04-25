@@ -1,14 +1,11 @@
 module Verse
   module Shrine
     module Config
-      class FileSystemSchema < Verse::Validation::Contract
-        params do
-          required(:path).filled(:string)
-          optional(:prefix).filled(:string)
-          optional(:directory_permissions).filled(:string)
-          optional(:permissions).filled(:string)
-        end
-
+      FileSystemSchema = Verse::Schema.define do
+        field(:path, String)
+        field?(:prefix, String)
+        field?(:directory_permissions, String)
+        field?(:permissions, String)
       end
     end
   end
