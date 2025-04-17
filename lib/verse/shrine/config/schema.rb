@@ -5,21 +5,21 @@ module Verse
     module Config
       Schema = Verse::Schema.define do
         field(:storages, Array) do
-          field(:name, String)
-          field(:adapter, String)
+          field(:name, Symbol)
+          field(:adapter, Symbol)
           field(:config, Hash)
 
-
-          rule("adapter match") do |hash, error|
-            schema, _ = Plugin::ADAPTERS.fetch(hash[:adapter]) do
-              error.add(:adapter, "Unsupported adapter: `#{hash[:adapter]}`")
-              next false
+          transform do |hash, error_builder|
+            hash[:adapter] = Adapters.fetch(hash[:adapter]) do
+              error.add(:adapter, "unsupported adapter: `#{hash[:adapter]}`")
+              next
+            end.yield_self do |adapter|
+              adapter.new(hash[:config])
             end
 
-            schema.validate(hash[:config], error_builder: error)
-
-            true
+            hash
           end
+
         end
       end
     end

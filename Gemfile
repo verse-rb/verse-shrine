@@ -13,7 +13,7 @@ gem "relaxed-rubocop"
 gem "rubocop", "~> 1.21"
 
 gem "verse-core", github: "verse-rb/verse-core", branch: "master"
-gem "verse-schema", github: "verse-rb/verse-schema", branch: "master"
+gem "verse-schema", "~> 1.0.0"
 
 gem "pry"
 gem "bootsnap"

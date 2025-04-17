@@ -1,3 +1,5 @@
+require_relative "../../spec_helper"
+
 RSpec.describe Verse::Shrine::Plugin do
   before do
     system "mkdir -p tmp/storage"
@@ -20,20 +22,20 @@ RSpec.describe Verse::Shrine::Plugin do
         file = File.open("./spec/spec_data/verse.txt")
         output = storage.upload(file)
 
-        expect(File.exists?("tmp/storage/default/#{output.id}")).to be_truthy
+        expect(File.exist?("tmp/storage/default/#{output.id}")).to be_truthy
       end
 
       Verse::Plugin[:shrine].with_storage(:other) do |storage|
         file = File.open("./spec/spec_data/verse.txt")
         output = storage.upload(file)
 
-        expect(File.exists?("tmp/storage/other/#{output.id}")).to be_truthy
+        expect(File.exist?("tmp/storage/other/#{output.id}")).to be_truthy
 
         file = storage.open(output.id)
         expect(file.read).to eq( (["This is a sample file with sample data"] * 12).join("\n") )
 
         storage.delete(output.id)
-        expect(File.exists?("tmp/storage/other/#{output.id}")).to be_falsey
+        expect(File.exist?("tmp/storage/other/#{output.id}")).to be_falsey
       end
     end
   end
